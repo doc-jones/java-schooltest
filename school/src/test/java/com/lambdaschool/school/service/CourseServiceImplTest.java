@@ -1,6 +1,8 @@
 package com.lambdaschool.school.service;
 
 import com.lambdaschool.school.SchoolApplication;
+import com.lambdaschool.school.model.Course;
+import com.lambdaschool.school.repository.InstructorRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,56 +14,70 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityNotFoundException;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SchoolApplication.class)
-public class CourseServiceImplTest {
-
+public class CourseServiceImplTest
+{
     @Autowired
     private CourseService courseService;
 
-    @Before
-    public void setUp() throws Exception {
+    @Autowired
+    private InstructorRepository instructrepo;
 
+    @Before
+    public void setUp() throws Exception
+    {
         MockitoAnnotations.initMocks(this);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
     }
 
     @Test
-    public void findAll() {
-
-        assertEquals(6, courseService.findAll().size());
-    }
-
-//    @Test
-//    public void findById() {
-//
-//        assertEquals("JavaScript", courseService.findById(2).getName());
-//    }
-//
-//    @Test
-//    public void findByIdNo() {
-//
-//        assertEquals(23, courseService.findById(23).getName());
-//    }
-
-    @Test
-    public void getCountStudentsInCourse() {
+    public void findCourseById()
+    {
+        assertEquals("Data Science", courseService.findCourseById(4).getCoursename());
     }
 
     @Test
-    public void delete() {
-        courseService.delete(2);
+    public void findAll()
+    {
+    }
+
+    @Test
+    public void getCountStudentsInCourse()
+    {
+    }
+
+    @Test
+    public void delete()
+    {
+        courseService.delete(4);
         assertEquals(5, courseService.findAll().size());
     }
 
     @Test (expected = EntityNotFoundException.class)
-    public void deleteNotFound() {
-     courseService.delete(23);
-     assertEquals(5, courseService.findAll().size());
+    public void deleteNotFound()
+    {
+        courseService.delete(4444);
+        assertEquals(5, courseService.findAll().size());
+    }
+
+    @Test
+    public void save()
+    {
+        Course cs = new Course("My New Course", instructrepo.findById(2L).orElseThrow(() -> new EntityNotFoundException(Long.toString(2L))));
+
+        Course addCourse = courseService.save(cs);
+
+        assertNotNull(addCourse);
+
+        Course foundCourse = courseService.findCourseById(addCourse.getCourseid());
+        assertEquals(addCourse.getCoursename(), foundCourse.getCoursename());
     }
 }

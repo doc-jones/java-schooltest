@@ -17,6 +17,13 @@ public class CourseServiceImpl implements CourseService
     private CourseRepository courserepos;
 
     @Override
+    public Course findCourseById(long id)
+    {
+        return courserepos.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
+    }
+
+    @Override
     public ArrayList<Course> findAll()
     {
         ArrayList<Course> list = new ArrayList<>();
@@ -28,11 +35,6 @@ public class CourseServiceImpl implements CourseService
     public ArrayList<CountStudentsInCourses> getCountStudentsInCourse()
     {
         return courserepos.getCountStudentsInCourse();
-    }
-
-    @Override
-    public void findCourseById(long Id) {
-
     }
 
     @Transactional
@@ -49,5 +51,15 @@ public class CourseServiceImpl implements CourseService
         }
     }
 
-
+    @Transactional
+    @Override
+    public Course save(Course course)
+    {
+        Course newCourse = new Course();
+        
+        newCourse.setCoursename(course.getCoursename());
+        newCourse.setInstructor(course.getInstructor());
+        
+        return courserepos.save(newCourse);
+    }
 }

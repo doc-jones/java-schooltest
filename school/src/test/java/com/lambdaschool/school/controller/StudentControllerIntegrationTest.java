@@ -1,7 +1,7 @@
 package com.lambdaschool.school.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lambdaschool.school.model.Course;
+import com.lambdaschool.school.model.Student;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.After;
 import org.junit.Before;
@@ -13,11 +13,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.number.OrderingComparison.lessThan;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CourseControllerIntegrationTest
+public class StudentControllerIntegrationTest
 {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -34,36 +33,20 @@ public class CourseControllerIntegrationTest
     }
 
     @Test
-    public void whenMeasuredReponseTime()
-    {
-        given().when().get("/courses/courses").then().time(lessThan(5000L));
-    }
-
-    @Test
-    public void getRestaurantById()
+    public void listAllStudents()
     {
     }
 
     @Test
-    public void getCountStudentsInCourses()
+    public void addNewStudent() throws Exception
     {
-    }
-
-    @Test
-    public void deleteCourseById()
-    {
-    }
-
-    @Test
-    public void addNewCourse() throws Exception
-    {
-        Course cs = new Course("My New Course", null);
-        cs.setCourseid(17);
+        Student s4 = new Student("Tiger");
+        s4.setStudid(29);
 
         ObjectMapper mapper = new ObjectMapper();
-        String stringCS = mapper.writeValueAsString(cs);
+        String stringS4 = mapper.writeValueAsString(s4);
 
-        given().contentType("application/json").body(stringCS).when().post("/courses/course/add").then().statusCode(201);
+        given().contentType("application/json").body(stringS4).when().post("/students/student/add").then().statusCode(201);
 
     }
 }

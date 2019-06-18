@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lambdaschool.school.model.Course;
 import com.lambdaschool.school.model.Instructor;
 import com.lambdaschool.school.model.Student;
-import com.lambdaschool.school.service.CourseService;
+import com.lambdaschool.school.service.StudentService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,33 +16,32 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = CourseController.class, secure = false)
-public class CourseControllerTest
+@WebMvcTest(value = StudentController.class, secure = false)
+public class StudentControllerTest
 {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private CourseService courseService;
+    private StudentService studentService;
 
-    private ArrayList<Course> courseList;
+    private List<Student> studentList;
 
     @Before
     public void setUp() throws Exception
     {
-        courseList = new ArrayList<>();
+        studentList = new ArrayList<>();
 
         Instructor i1 = new Instructor("Sally");
         i1.setInstructid(1);
@@ -93,12 +92,9 @@ public class CourseControllerTest
         c1.getStudents().add(s3);
         c4.getStudents().add(s3);
 
-        courseList.add(c1);
-        courseList.add(c2);
-        courseList.add(c3);
-        courseList.add(c4);
-        courseList.add(c5);
-        courseList.add(c6);
+        studentList.add(s1);
+        studentList.add(s2);
+        studentList.add(s3);
     }
 
     @After
@@ -107,55 +103,26 @@ public class CourseControllerTest
     }
 
     @Test
-    public void getRestaurantById()
+    public void listAllStudents()
     {
     }
 
     @Test
-    public void listAllCourses() throws Exception
+    public void addNewStudent() throws Exception
     {
-        String apiUrl = "/courses/courses";
+        String apiUrl = "/students/student/add";
 
-        Mockito.when(courseService.findAll()).thenReturn(courseList);
-
-        RequestBuilder rb = MockMvcRequestBuilders.get(apiUrl).accept(MediaType.APPLICATION_JSON);
-
-        // the following actually performs a real controller call
-        MvcResult r = mockMvc.perform(rb).andReturn(); // this could throw an exception
-        String tr = r.getResponse().getContentAsString();
+        Student s4 = new Student("Tiger");
+        s4.setStudid(29);
 
         ObjectMapper mapper = new ObjectMapper();
-        String er = mapper.writeValueAsString(courseList);
+        String restaurantString = mapper.writeValueAsString(s4);
 
-        assertEquals("Rest API Returns List", er, tr);
-    }
-
-    @Test
-    public void getCountStudentsInCourses()
-    {
-    }
-
-    @Test
-    public void deleteCourseById()
-    {
-    }
-
-    @Test
-    public void addNewCourse() throws Exception
-    {
-        String apiUrl = "/courses/course/add";
-
-        Course cs = new Course("My New Course", null);
-        cs.setCourseid(17);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String courseString = mapper.writeValueAsString(cs);
-
-        Mockito.when(courseService.save(any(Course.class))).thenReturn(cs);
+        Mockito.when(studentService.save(any(Student.class))).thenReturn(s4);
 
         RequestBuilder rb = MockMvcRequestBuilders.post(apiUrl)
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-                .content(courseString);
+                .content(restaurantString);
         mockMvc.perform(rb).andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print());
     }
 }

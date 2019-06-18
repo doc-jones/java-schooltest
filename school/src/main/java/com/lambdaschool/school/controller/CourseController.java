@@ -24,7 +24,7 @@ public class CourseController
 
     @GetMapping(value = "/course/{courseId}",
             produces = {"application/json"})
-    public ResponseEntity<?> getRestaurantById(
+    public ResponseEntity<?> getCourseById(
             @PathVariable
                     Long courseId)
     {
