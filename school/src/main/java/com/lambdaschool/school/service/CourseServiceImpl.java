@@ -30,6 +30,11 @@ public class CourseServiceImpl implements CourseService
         return courserepos.getCountStudentsInCourse();
     }
 
+    @Override
+    public void findCourseById(long Id) {
+
+    }
+
     @Transactional
     @Override
     public void delete(long id) throws EntityNotFoundException
